@@ -9,23 +9,30 @@ def test():
     
 test()
 """
-import urllib
+import urllib.request
+import os 
 
 def read_text():
-    quotes = open(r"E:\recovery\udacity\python\chapter 5\movie_quotes.txt")
-    #quotes = open("C:\Users\hessa\Desktop\movie_quotes.txt")
+    cwd = os.path.dirname(os.path.realpath(__file__))
+    file_to_read = cwd + "\\movie_quotes.txt"
+    quotes = open(file_to_read, "r")
+    #quotes = open("movie_quotes.txt")
     contents_of_file = quotes.read()
-    #print(contents_of_file)
+    # print(contents_of_file)    
     quotes.close()
     check_profanity(contents_of_file)
 
 def check_profanity(text_to_check):
-    connection = urllib.urlopen("http://www.wdylike.appspot.com/?q="+text_to_check)
-    output = connection.read()
+    url ="http://www.wdylike.appspot.com/?q=" + text_to_check.replace(" ","%")
+    # or use with urllib.request.urlopen(url) as connection
+    connection = urllib.request.urlopen(url)
+   
+    print(connection.read(100).decode('utf-8'))
+    output = connection.read("100")
     #print(output)
-    if "true" in output:
+    if output:
         print("Profanity Alert!!!")
-    elif "false" in output:
+    elif not output:
         print("This document has no curse word")
     else:
         print("Could not scan the documnet properly")
